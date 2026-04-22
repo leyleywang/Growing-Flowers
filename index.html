@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>绿植养护 -  Growing Flowers</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+</head>
+<body>
+    <div class="app-container">
+        <!-- 首页 -->
+        <div id="home-page" class="page active">
+            <div class="page-header">
+                <h1 class="page-title">
+                    <i class="fas fa-seedling"></i>
+                    绿植养护
+                </h1>
+                <div class="search-container">
+                    <div class="search-input-wrapper">
+                        <i class="fas fa-search search-icon"></i>
+                        <input type="text" id="search-input" placeholder="搜索花友笔记...">
+                    </div>
+                </div>
+            </div>
+            
+            <div class="page-content">
+                <div class="notes-container" id="notes-container">
+                    <!-- 花友笔记将通过JavaScript动态生成 -->
+                </div>
+            </div>
+        </div>
+        
+        <!-- 问诊页面 -->
+        <div id="consult-page" class="page">
+            <div class="page-header">
+                <h1 class="page-title">
+                    <i class="fas fa-stethoscope"></i>
+                    植物问诊
+                </h1>
+            </div>
+            
+            <div class="page-content">
+                <div class="consult-section">
+                    <div class="consult-intro">
+                        <p>拍照识别植物，获取专业养护方案</p>
+                        <div class="consult-actions">
+                            <button id="take-photo-btn" class="btn-primary">
+                                <i class="fas fa-camera"></i>
+                                拍照识别
+                            </button>
+                            <input type="file" id="photo-input" accept="image/*" capture="environment" style="display: none;">
+                        </div>
+                    </div>
+                    
+                    <div class="consult-records-section">
+                        <h2 class="section-title">问诊记录</h2>
+                        <div class="consult-records" id="consult-records">
+                            <!-- 问诊记录将通过JavaScript动态生成 -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 我的页面 -->
+        <div id="profile-page" class="page">
+            <div class="page-header">
+                <h1 class="page-title">
+                    <i class="fas fa-user"></i>
+                    我的
+                </h1>
+            </div>
+            
+            <div class="page-content">
+                <div class="profile-section">
+                    <div class="profile-header">
+                        <div class="avatar-wrapper">
+                            <img id="user-avatar" src="https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=a%20beautiful%20potted%20plant%20with%20green%20leaves%20in%20a%20ceramic%20pot%2C%20minimalist%20style%2C%20soft%20lighting&image_size=square" alt="用户头像">
+                            <div class="avatar-edit-btn" id="avatar-edit-btn">
+                                <i class="fas fa-camera"></i>
+                            </div>
+                        </div>
+                        <div class="user-info">
+                            <div class="username-container">
+                                <h2 id="user-name">花友小明</h2>
+                                <button id="edit-username-btn" class="edit-btn">
+                                    <i class="fas fa-pen"></i>
+                                </button>
+                            </div>
+                            <p class="user-status">
+                                <i class="fas fa-leaf"></i>
+                                已养护 12 盆绿植
+                            </p>
+                        </div>
+                    </div>
+                    
+                    <div class="reminders-section">
+                        <h2 class="section-title">浇水施肥提醒</h2>
+                        <div class="reminders-list" id="reminders-list">
+                            <!-- 提醒列表将通过JavaScript动态生成 -->
+                        </div>
+                    </div>
+                    
+                    <div class="settings-section">
+                        <h2 class="section-title">设置</h2>
+                        <div class="settings-list">
+                            <div class="setting-item">
+                                <i class="fas fa-info-circle setting-icon"></i>
+                                <span class="setting-label">关于我们</span>
+                                <i class="fas fa-chevron-right setting-arrow"></i>
+                            </div>
+                            <div class="setting-item">
+                                <i class="fas fa-cog setting-icon"></i>
+                                <span class="setting-label">设置</span>
+                                <i class="fas fa-chevron-right setting-arrow"></i>
+                            </div>
+                            <div class="setting-item">
+                                <i class="fas fa-star setting-icon"></i>
+                                <span class="setting-label">给个好评</span>
+                                <i class="fas fa-chevron-right setting-arrow"></i>
+                            </div>
+                            <div class="setting-item">
+                                <i class="fas fa-share-alt setting-icon"></i>
+                                <span class="setting-label">分享给朋友</span>
+                                <i class="fas fa-chevron-right setting-arrow"></i>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="version-section">
+                        <p>版本 1.0.0</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 底部导航栏 -->
+        <nav class="bottom-nav">
+            <div class="nav-item active" data-page="home-page">
+                <i class="fas fa-home nav-icon"></i>
+                <span class="nav-label">首页</span>
+            </div>
+            <div class="nav-item" data-page="consult-page">
+                <i class="fas fa-stethoscope nav-icon"></i>
+                <span class="nav-label">问诊</span>
+            </div>
+            <div class="nav-item" data-page="profile-page">
+                <i class="fas fa-user nav-icon"></i>
+                <span class="nav-label">我的</span>
+            </div>
+        </nav>
+    </div>
+    
+    <!-- 模态框 - 评论 -->
+    <div id="comment-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>评论</h3>
+                <button class="modal-close" id="close-comment-modal">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="comments-list" id="comments-list">
+                    <!-- 评论列表将通过JavaScript动态生成 -->
+                </div>
+                <div class="comment-input-container">
+                    <input type="text" id="comment-input" placeholder="输入评论...">
+                    <button id="submit-comment-btn" class="btn-primary">发送</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- 模态框 - 问诊详情 -->
+    <div id="consult-detail-modal" class="modal">
+        <div class="modal-content consult-detail-modal">
+            <div class="modal-header">
+                <h3>问诊详情</h3>
+                <button class="modal-close" id="close-consult-detail-modal">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="consult-detail-content" id="consult-detail-content">
+                    <!-- 问诊详情将通过JavaScript动态生成 -->
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- 模态框 - 拍照识别结果 -->
+    <div id="photo-result-modal" class="modal">
+        <div class="modal-content photo-result-modal">
+            <div class="modal-header">
+                <h3>识别结果</h3>
+                <button class="modal-close" id="close-photo-result-modal">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="photo-result-content" id="photo-result-content">
+                    <!-- 识别结果将通过JavaScript动态生成 -->
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- 用户名编辑模态框 -->
+    <div id="edit-username-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>编辑用户名</h3>
+                <button class="modal-close" id="close-edit-username-modal">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="edit-username-container">
+                    <input type="text" id="new-username-input" placeholder="输入新用户名">
+                    <div class="modal-actions">
+                        <button id="cancel-edit-username-btn" class="btn-secondary">取消</button>
+                        <button id="save-username-btn" class="btn-primary">保存</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- 隐藏的文件输入框用于头像上传 -->
+    <input type="file" id="avatar-input" accept="image/*" style="display: none;">
+    
+    <script src="script.js"></script>
+</body>
+</html>
