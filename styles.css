@@ -1828,6 +1828,43 @@ body {
     padding-right: 40px;
 }
 
+/* 日期时间输入框优化 - 扩展点击区域 */
+.form-group input[type="date"],
+.form-group input[type="time"] {
+    position: relative;
+    cursor: pointer;
+}
+
+/* 扩展日期选择器图标点击区域到整个输入框 */
+.form-group input[type="date"]::-webkit-calendar-picker-indicator,
+.form-group input[type="time"]::-webkit-calendar-picker-indicator {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    width: auto;
+    height: auto;
+    background: transparent;
+    color: transparent;
+    cursor: pointer;
+}
+
+/* Firefox支持 */
+.form-group input[type="date"]::-moz-calendar-picker-indicator,
+.form-group input[type="time"]::-moz-calendar-picker-indicator {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    width: auto;
+    height: auto;
+    background: transparent;
+    color: transparent;
+    cursor: pointer;
+}
+
 /* 新增：消息提醒样式 */
 .notification-modal .modal-content {
     max-height: 85vh;
