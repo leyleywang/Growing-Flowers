@@ -385,6 +385,19 @@ document.addEventListener('DOMContentLoaded', function() {
     const closePhotoResultModal = document.getElementById('close-photo-result-modal');
     const closeEditUsernameModal = document.getElementById('close-edit-username-modal');
     const closeReminderSetting = document.getElementById('close-reminder-setting');
+    
+    // 摄像头模态框
+    const cameraModal = document.getElementById('camera-modal');
+    const closeCameraBtn = document.getElementById('close-camera');
+    const capturePhotoBtn = document.getElementById('capture-photo-btn');
+    const switchCameraBtn = document.getElementById('switch-camera-btn');
+    const cameraGalleryBtn = document.getElementById('camera-gallery-btn');
+    const cameraVideo = document.getElementById('camera-video');
+    const cameraCanvas = document.getElementById('camera-canvas');
+    
+    // 摄像头状态
+    let mediaStream = null;
+    let facingMode = 'environment';
 
     // 初始化
     function init() {
@@ -835,7 +848,7 @@ document.addEventListener('DOMContentLoaded', function() {
         // 拍照选项 - 相机
         optionCameraBtn.addEventListener('click', function() {
             photoOptionModal.classList.remove('active');
-            photoCaptureInput.click();
+            openCamera();
         });
 
         // 拍照选项 - 相册
@@ -967,14 +980,36 @@ document.addEventListener('DOMContentLoaded', function() {
         closeNotification.addEventListener('click', function() {
             notificationModal.classList.remove('active');
         });
+        
+        // 摄像头模态框按钮
+        closeCameraBtn.addEventListener('click', function() {
+            closeCamera();
+        });
+        
+        capturePhotoBtn.addEventListener('click', function() {
+            capturePhoto();
+        });
+        
+        switchCameraBtn.addEventListener('click', function() {
+            switchCamera();
+        });
+        
+        cameraGalleryBtn.addEventListener('click', function() {
+            closeCamera();
+            photoUploadInput.click();
+        });
 
         // 点击模态框外部关闭
         [commentModal, consultDetailModal, photoResultModal, editUsernameModal, 
          imageViewerModal, noteDetailModal, photoOptionModal, reminderSettingModal,
-         notificationModal].forEach(modal => {
+         notificationModal, cameraModal].forEach(modal => {
             modal.addEventListener('click', function(e) {
                 if (e.target === this) {
-                    this.classList.remove('active');
+                    if (this === cameraModal) {
+                        closeCamera();
+                    } else {
+                        this.classList.remove('active');
+                    }
                     if (this === reminderSettingModal) {
                         currentEditingReminderId = null;
                     }
@@ -985,6 +1020,9 @@ document.addEventListener('DOMContentLoaded', function() {
         // 键盘事件 - ESC关闭模态框，左右键切换图片
         document.addEventListener('keydown', function(e) {
             if (e.key === 'Escape') {
+                if (cameraModal.classList.contains('active')) {
+                    closeCamera();
+                }
                 document.querySelectorAll('.modal.active').forEach(modal => {
                     modal.classList.remove('active');
                 });
@@ -1373,7 +1411,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 </div>
                 <div class="comment-text">${comment.text}</div>
                 <div class="comment-actions">
-                    <button class="comment-action-btn reply-btn" data-comment-id="${comment.id}" data-username="${comment.user}">
+                    <button class="comment-action-btn reply-btn" data-comment-id="${comment.id}" data-username="${comment.user}" data-reply-type="comment">
                         <i class="fas fa-reply"></i>
                         回复
                     </button>
@@ -1389,6 +1427,12 @@ document.addEventListener('DOMContentLoaded', function() {
                                         ${reply.replyTo ? `<span class="reply-to">回复 ${reply.replyTo}</span>` : ''}
                                     </div>
                                     <div class="reply-text">${reply.text}</div>
+                                    <div class="comment-actions">
+                                        <button class="comment-action-btn reply-btn" data-comment-id="${comment.id}" data-username="${reply.user}" data-reply-type="reply" data-reply-id="${reply.id}">
+                                            <i class="fas fa-reply"></i>
+                                            回复
+                                        </button>
+                                    </div>
                                 </div>
                             </div>
                         `).join('')}
@@ -1396,7 +1440,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 ` : ''}
                 <div class="reply-container" id="detail-reply-container-${comment.id}" style="display: none;">
                     <div class="reply-input-wrapper">
-                        <input type="text" class="reply-input" placeholder="回复 @${comment.user}...">
+                        <input type="text" class="reply-input" placeholder="回复...">
                         <button class="reply-submit-btn" data-comment-id="${comment.id}">发送</button>
                         <button class="reply-cancel-btn">取消</button>
                     </div>
@@ -1481,6 +1525,78 @@ document.addEventListener('DOMContentLoaded', function() {
                 }
             });
         });
+    }
+
+    // 打开摄像头
+    async function openCamera() {
+        try {
+            if (mediaStream) {
+                closeCamera();
+            }
+            
+            const constraints = {
+                video: {
+                    facingMode: facingMode,
+                    width: { ideal: 1280 },
+                    height: { ideal: 720 }
+                },
+                audio: false
+            };
+            
+            mediaStream = await navigator.mediaDevices.getUserMedia(constraints);
+            cameraVideo.srcObject = mediaStream;
+            cameraModal.classList.add('active');
+            
+        } catch (error) {
+            console.error('无法访问摄像头:', error);
+            
+            if (error.name === 'NotAllowedError') {
+                alert('请允许访问摄像头以使用拍照功能');
+            } else if (error.name === 'NotFoundError') {
+                alert('未检测到摄像头设备');
+            } else {
+                alert('无法打开摄像头，将使用文件选择方式');
+                photoCaptureInput.click();
+            }
+        }
+    }
+    
+    // 关闭摄像头
+    function closeCamera() {
+        if (mediaStream) {
+            mediaStream.getTracks().forEach(track => track.stop());
+            mediaStream = null;
+        }
+        cameraVideo.srcObject = null;
+        cameraModal.classList.remove('active');
+    }
+    
+    // 切换摄像头
+    async function switchCamera() {
+        facingMode = facingMode === 'environment' ? 'user' : 'environment';
+        if (mediaStream) {
+            await openCamera();
+        }
+    }
+    
+    // 拍照
+    function capturePhoto() {
+        if (!cameraVideo || !cameraCanvas) return;
+        
+        const video = cameraVideo;
+        const canvas = cameraCanvas;
+        
+        canvas.width = video.videoWidth;
+        canvas.height = video.videoHeight;
+        
+        const ctx = canvas.getContext('2d');
+        ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+        
+        canvas.toBlob(function(blob) {
+            const file = new File([blob], 'captured-photo.jpg', { type: 'image/jpeg' });
+            closeCamera();
+            handlePhotoUpload(file);
+        }, 'image/jpeg', 0.9);
     }
 
     // 切换页面

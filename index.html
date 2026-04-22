@@ -307,6 +307,35 @@
         </div>
     </div>
     
+    <!-- 模态框 - 摄像头拍照 -->
+    <div id="camera-modal" class="modal camera-modal">
+        <div class="modal-content camera-content">
+            <div class="camera-header">
+                <span class="camera-title">拍照识别</span>
+                <button class="modal-close" id="close-camera">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="camera-body">
+                <div class="camera-container">
+                    <video id="camera-video" autoplay playsinline></video>
+                    <canvas id="camera-canvas" style="display: none;"></canvas>
+                </div>
+                <div class="camera-controls">
+                    <button class="camera-switch-btn" id="switch-camera-btn">
+                        <i class="fas fa-sync-alt"></i>
+                    </button>
+                    <button class="camera-capture-btn" id="capture-photo-btn">
+                        <i class="fas fa-camera"></i>
+                    </button>
+                    <button class="camera-gallery-btn" id="camera-gallery-btn">
+                        <i class="fas fa-folder"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
     <!-- 模态框 - 浇水提醒设置 -->
     <div id="reminder-setting-modal" class="modal">
         <div class="modal-content">
