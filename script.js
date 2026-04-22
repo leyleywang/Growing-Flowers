@@ -398,15 +398,20 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // 更新消息提醒徽章
     function updateNotificationBadge() {
-        const badge = document.getElementById('notification-badge');
+        const badge1 = document.getElementById('notification-badge');
+        const badge2 = document.getElementById('profile-notification-badge');
         const unreadCount = mockNotifications.filter(n => !n.read).length;
         
-        if (unreadCount > 0) {
-            badge.textContent = unreadCount;
-            badge.style.display = 'flex';
-        } else {
-            badge.style.display = 'none';
-        }
+        [badge1, badge2].forEach(badge => {
+            if (badge) {
+                if (unreadCount > 0) {
+                    badge.textContent = unreadCount;
+                    badge.style.display = 'flex';
+                } else {
+                    badge.style.display = 'none';
+                }
+            }
+        });
     }
 
     // 渲染花友笔记
@@ -896,6 +901,15 @@ document.addEventListener('DOMContentLoaded', function() {
             renderNotifications();
             notificationModal.classList.add('active');
         });
+        
+        // 我的页面消息提醒按钮
+        const profileNotificationBtn = document.getElementById('profile-notification-btn');
+        if (profileNotificationBtn) {
+            profileNotificationBtn.addEventListener('click', function() {
+                renderNotifications();
+                notificationModal.classList.add('active');
+            });
+        }
 
         // 提醒设置保存
         saveReminderBtn.addEventListener('click', function() {
